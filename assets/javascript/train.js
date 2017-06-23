@@ -19,7 +19,7 @@ var destination = "";
 var trainTime = "";
 var frequency = "";
     // Capture Button Click
-    $("#add-train").on("click", function() {
+    $("#add-train").on("click", function(event) {
       // Don't refresh the page!
       event.preventDefault();
 
@@ -30,37 +30,39 @@ var frequency = "";
       frequency = $("#frequency-input").val().trim();
 
       database.ref().set({
-        trainName: trainName,
-        destination: destination,
-        trainTime: trainTime,
-        frequency: frequency,
+        name: trainName,
+        dest: destination,
+        time: trainTime,
+        frequ: frequency,
         dateAdded: firebase.database.ServerValue.TIMESTAMP
       });
-
     });
 
     // Firebase watcher + initial loader HINT: .on("value")
-    database.ref().on("child_added", function(childSnapshot) {
+    database.ref().on("value", function(snapshot) {
 
-      // Log everything that's coming out of snapshot
+      // Log everything that's coming out of childSnapshot
       console.log(snapshot.val());
-      console.log(snapshot.val().trainName);
-      console.log(snapshot.val().destination);
-      console.log(snapshot.val().trainTime);
-      console.log(snapshot.val().frequency);
+      // console.log(snapshot.val().trainName);
+      // console.log(snapshot.val().destination);
+      // console.log(snapshot.val().trainTime);
+      // console.log(snapshot.val().frequency);
 
-      $("#fullTrainInfo").append('<tr><th> ' + childSnapshot.val().trainName +
-        " </th><th> " + childSnapshot.val().destination +
-        " </th<th> " + childSnapshot.val().trainTime +
-        " </th><th> " + childSnapshot.val().frequency + " </th></tr>");
+      // $("#fullTrainInfo").append('<tr><th id="trainName"> ' + childSnapshot.val().trainName +
+      //   ' </th><th id="destination"> ' + childSnapshot.val().destination +
+      //   ' </th<th id="trainTime"> ' + childSnapshot.val().trainTime +
+      //   ' </th><th="frequency"> ' + childSnapshot.val().frequency + " </th></tr>");
+    
+
     // Handle the errors
-    }, function(errorObject) {
-      console.log("Errors handled: " + errorObject.code);
-    });
-    database.ref().orderByChild("dateAdded").limitToLast(1).on("child_added", function(snapshot) {
-      // Change the HTML to reflect
-      $("#name-display").html(snapshot.val().trainName);
-      $("#destination").html(snapshot.val().destination);
-      $("#train-time").html(snapshot.val().trainTime);
-      $("#frequency").html(snapshot.val().frequency);
-    });
+    });//, function(errorObject) {
+    //   console.log("Errors handled: " + errorObject.code);
+    // });
+
+    // database.ref().orderByChild("dateAdded").limitToLast(1).on("child_added", function(childSnapshot) {
+    //   // Change the HTML to reflect
+    //   $("#trainName").html(childSnapshot.val().trainName);
+    //   $("#destination").html(childSnapshot.val().destination);
+    //   $("#trainTime").html(childSnapshot.val().trainTime);
+    //   $("#frequency").html(childSnapshot.val().frequency);
+    // });
