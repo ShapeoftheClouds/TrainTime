@@ -10,6 +10,9 @@
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/4.1.3/firebase.js"></script>
 
+    <!-- Moment JS -->
+    <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
+
     <!-- JQuery -->
   	<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
 
@@ -49,11 +52,12 @@
                   <th>Minutes Away</th>
                 </tr>
 
-                  <div id="fullTrainInfo"></div>
-
               </table>
         </div>
       </div>
+  </div>
+
+    <div class="row">
 
       <!-- Add Train Panel-->
       <div class="col-md-10 col-md-offset-1">
@@ -71,7 +75,7 @@
               </div>
               <div class="form-group">
                 <label for="desination-input">Destination</label>
-                <input class="form-control" id="desination-input" type="text">
+                <input class="form-control" id="destination-input" type="text">
               </div>
               <div class="form-group">
                 <label for="time-input">First Train Time (HH:mm - military time)</label>
@@ -87,6 +91,7 @@
         </div>
       </div>
 
+</div>
 </div>
 
 </body>

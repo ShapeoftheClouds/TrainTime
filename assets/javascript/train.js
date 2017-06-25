@@ -1,13 +1,12 @@
-// Initialize Firebase
+  // Initialize Firebase
   var config = {
-    apiKey: "AIzaSyCi4SjAmABzF94lEunAgVtRLubv78UByRg",
-    authDomain: "starshipawesome-f4af8.firebaseapp.com",
-    databaseURL: "https://starshipawesome-f4af8.firebaseio.com",
-    projectId: "starshipawesome-f4af8",
-    storageBucket: "starshipawesome-f4af8.appspot.com",
-    messagingSenderId: "899885022111"
+    apiKey: "AIzaSyCfRNl4VGEICZb7FrwN9O6Ch7fazumsbIQ",
+    authDomain: "trainsandwinterrains-4c117.firebaseapp.com",
+    databaseURL: "https://trainsandwinterrains-4c117.firebaseio.com",
+    projectId: "trainsandwinterrains-4c117",
+    storageBucket: "",
+    messagingSenderId: "46265314640"
   };
-  // Initializing the firebase database
   firebase.initializeApp(config);
 
 // Create a variable for the firebase database.
@@ -15,54 +14,69 @@ var database = firebase.database();
 
 // Create variables for train information
 var trainName = ""; 
-var destination = "";
+var whereWeGo = "";
 var trainTime = "";
 var frequency = "";
+
     // Capture Button Click
-    $("#add-train").on("click", function(event) {
+    $(document).on("click", "#add-train", function(event) {
       // Don't refresh the page!
       event.preventDefault();
 
       // Store and retrieve recent user data.
       trainName = $("#train-input").val().trim();
-      destination = $("#destination-input").val().trim();
+      whereWeGo = $("#destination-input").val().trim();
       trainTime = $("#time-input").val().trim();
       frequency = $("#frequency-input").val().trim();
 
-      database.ref().set({
+      database.ref().push({
         name: trainName,
-        dest: destination,
+        dest: whereWeGo,
         time: trainTime,
         frequ: frequency,
         dateAdded: firebase.database.ServerValue.TIMESTAMP
       });
     });
 
-    // Firebase watcher + initial loader HINT: .on("value")
-    database.ref().on("value", function(snapshot) {
+// Firebase watcher + initial loader HINT: .on("value")
+    database.ref().on("child_added", function(childSnapshot) {
+
+      // console.log(childSnapshot.val());
+      // console.log(childSnapshot.val().name);
+      // console.log(childSnapshot.val().dest);
+      // console.log(childSnapshot.val().time);
+      // console.log(childSnapshot.val().frequ);
+
+
+      // Convert Time to show the frequency between trains and the next train's arrival.
+      // First Time (pushed back 1 year to make sure it comes before current time)
+      var firstTimeConverted = moment(childSnapshot.val().time, "hh:mm").subtract(1, "years"); 
+      console.log(firstTimeConverted);
+      // Current Time
+      var currentTime = moment();
+      // Difference between the times
+      var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
+      // Time apart (remainder)
+      var tRemainder = diffTime % childSnapshot.val().frequ;
+      // Minutes until train
+      var tMinutesTillTrain = childSnapshot.val().frequ - tRemainder;
+      // Next Train
+      var nextTrain = moment().add(tMinutesTillTrain, "minutes");
+      console.log(nextTrain);
+      // Next train arrival formatted
+      var nextTrainArrival = moment(nextTrain).format("hh:mm");
+      console.log(nextTrainArrival);
 
       // Log everything that's coming out of childSnapshot
-      console.log(snapshot.val());
-      // console.log(snapshot.val().trainName);
-      // console.log(snapshot.val().destination);
-      // console.log(snapshot.val().trainTime);
-      // console.log(snapshot.val().frequency);
 
-      // $("#fullTrainInfo").append('<tr><th id="trainName"> ' + childSnapshot.val().trainName +
-      //   ' </th><th id="destination"> ' + childSnapshot.val().destination +
-      //   ' </th<th id="trainTime"> ' + childSnapshot.val().trainTime +
-      //   ' </th><th="frequency"> ' + childSnapshot.val().frequency + " </th></tr>");
-    
+      $("table").append('<tr class="panel-heading"><td id="trainName"> ' + childSnapshot.val().name +
+        ' </td><td id="destination"> ' + childSnapshot.val().dest +
+        ' </td><td id="frequency"> ' + childSnapshot.val().frequ + ' </td><td id="nextArrival"> ' 
+        + nextTrainArrival + ' </td><td id="minutesAway"> ' + tMinutesTillTrain +  ' </td></tr> ');
+  
 
     // Handle the errors
-    });//, function(errorObject) {
-    //   console.log("Errors handled: " + errorObject.code);
-    // });
+    }, function(errorObject) {
+      console.log("Errors handled: " + errorObject.code);
+    });
 
-    // database.ref().orderByChild("dateAdded").limitToLast(1).on("child_added", function(childSnapshot) {
-    //   // Change the HTML to reflect
-    //   $("#trainName").html(childSnapshot.val().trainName);
-    //   $("#destination").html(childSnapshot.val().destination);
-    //   $("#trainTime").html(childSnapshot.val().trainTime);
-    //   $("#frequency").html(childSnapshot.val().frequency);
-    // });
