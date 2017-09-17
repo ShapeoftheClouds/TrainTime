@@ -64,7 +64,7 @@ var frequency = "";
       var nextTrain = moment().add(tMinutesTillTrain, "minutes");
       console.log(nextTrain);
       // Next train arrival formatted
-      var nextTrainArrival = moment(nextTrain).format("HH:mm");
+      var nextTrainArrival = moment(nextTrain).format("hh:mm");
       console.log(nextTrainArrival);
 
       // Log everything that's coming out of childSnapshot
